@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('#form').onsubmit = function() {
+                if (!localStorage.getItem('displayName')) {
+                    let name = document.querySelector('#name').value;
+                    localStorage.setItem('displayName', name);
+                }
+                alert(`Hello ${name}`);
+    };
+})
+    </script>
+	<title>Display name</title>
+</head>
+
+<body>
+	<div class="container">
+		<p>
+            Please fill a display name:
+		</p>
+        <form id="form" action="/messages" method="post">
+            <input id="name" autocomplete="off" autofocus type="text" placeholder="Username" required>
+            <input type="submit">
+        </form>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            if (!localStorage.getItem("messageLog")) {
+                var messageLog = [];
+                localStorage.setItem('messageLog', JSON.stringify(messageLog));
+            }
+
+            var ml = JSON.parse(localStorage.getItem('messageLog'));
+            //ml.push({'user': 'xia', 'time': '12:53:22', 'message': 'hello world'});
+            localStorage.setItem('messageLog', JSON.stringify(ml));
+
+            // Loop through messageLog in localStorage to display chat history
+            var i;
+            for (i = 0; i < ml.length; i++) {
+                const li = document.createElement('li');
+                li.innerHTML = "<b>" + ml[i]['user'] + " </b>" + "<span style='font-weight: 100; font-size: 12px'>" + ml[i]['time'] + " </span><br />"
+                              + ml[i]['message'];
+
+                // Add new message to list
+                document.querySelector('#messages').append(li);
+            }
+
+            // By default, submit button is disabled
+            document.querySelector('#submit').disabled = true;
+
+            // Connect to websocket
+            var socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port);
+
+            socket.on('connect', () => {
+
+                console.log("socket connected")
+
+                // Enable button only if there is text in the input
+                document.querySelector('#message').onkeyup = () => {
+                    if (document.querySelector('#message').value.length > 0) {
+                        document.querySelector('#submit').disabled = false;
+                    }
+                    else {
+                        document.querySelector('#submit').disabled = true;
+                    }
+                }
+
+                var d = new Date();
+                var hr = d.getHours();
+                var min = d.getMinutes();
+                var sec = d.getSeconds();
+                var now = hr + ':' + min + ':' + sec;
+
+                var user = localStorage.getItem('displayName');
+
+                document.querySelector('#new-message').onsubmit = function() {
+
+                    var myMessage = document.querySelector('#message').value;
+
+                    socket.emit('submit message', {'user': user, 'time': now, 'message': myMessage});
+
+                    // Stop form from submitting
+                    return false;
+                };
+            });
+
+            socket.on('announce message', message => {
+
+                console.log('my message is ' + message['user'] + ' ' + message['time'] + ' ' + message['message']);
+
+                // Create new item for list
+                const li = document.createElement('li');
+                li.innerHTML = "<b>" + message['user'] + " </b>" + "<span style='font-weight: 100; font-size: 12px'>" + message['time'] + " </span><br />"
+                              + message['message'];
+
+                // Add new message to list
+                document.querySelector('#messages').append(li);
+
+                let ml = JSON.parse(localStorage.getItem('messageLog'));
+                ml.push({'user': message['user'], 'time': message['time'], 'message': message['message']});
+                localStorage.setItem('messageLog', JSON.stringify(ml));
+
+                // Clear input field and disable submit button again
+                document.querySelector('#message').value='';
+                document.querySelector('#submit').disabled = true;
+            });
+
+            console.log("message: " + ml[0]['message']);
+    })
+    </script>
+	<title>chatRoom</title>
+</head>
+
+<body>
+	<div class="container">
+        <h1>Messages</h1>
+		<ul id="messages" style="list-style: none;">
+		</ul>
+        <form id="new-message">
+            <input id="message" autocomplete="off" autofocus type="text" placeholder="New message">
+            <input id="submit" type="submit">
+        </form>
+	</div>
+</body>
+
+</html>
