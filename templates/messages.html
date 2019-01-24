@@ -14,7 +14,6 @@
             }
 
             var ml = JSON.parse(localStorage.getItem('messageLog'));
-            //ml.push({'user': 'xia', 'time': '12:53:22', 'message': 'hello world'});
             localStorage.setItem('messageLog', JSON.stringify(ml));
 
             // Loop through messageLog in localStorage to display chat history
@@ -87,8 +86,6 @@
                 document.querySelector('#message').value='';
                 document.querySelector('#submit').disabled = true;
             });
-
-            console.log("message: " + ml[0]['message']);
     })
     </script>
 	<title>chatRoom</title>
