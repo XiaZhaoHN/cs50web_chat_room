@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link href="static/styles.css" rel="stylesheet" type="text/css" />
     <script>
+
         document.addEventListener('DOMContentLoaded', function() {
 
             if (!localStorage.getItem('channels')) {
@@ -15,9 +16,6 @@
             }
 
             var ch = JSON.parse(localStorage.getItem('channels'));
-            //ch.push({'channel': 'first channel'});
-            //ch.push({'channel': 'second channel'});
-            localStorage.setItem('channels', JSON.stringify(ch));
 
             // Loop through channels list in localStorage to display
             var j;
@@ -30,10 +28,17 @@
                 document.querySelector('#channels').append(li);
             }
 
+            if (!localStorage.getItem('selectedChannel')) {
+                var channel = '';
+                localStorage.setItem('channel', JSON.stringify(selectedChannel));
+            }
+
+            var selectedChannel = localStorage.getItem('selectedChannel');
             document.querySelectorAll('.channel').forEach(function(li) {
                 li.onclick = function() {
-                    const selectedChannel = li.innerHTML;
-                    console.log(selectedChannel);
+                    let channel = li.innerHTML;
+                    localStorage.setItem('channel', JSON.stringify(selectedChannel));
+                    console.log(channel);
                     if (!localStorage.getItem(selectedChannel)) {
                         var newChannel = []
                         localStorage.setItem(selectedChannel, JSON.stringify(newChannel));
@@ -41,6 +46,11 @@
 
                     const ml = JSON.parse(localStorage.getItem(selectedChannel));
                     //localStorage.setItem(selectedChannel, JSON.stringify(ml));
+
+                    const ul = document.createElement('ul');
+                    ul.setAttribute("id", "messages");
+
+                    document.querySelector('#message-list').append(ul);
 
                     // Loop through messages for clicked channel in localStorage to display chat history
                     var i;
@@ -123,17 +133,19 @@
     <div>
         <div class="channel-container">
             <h1>Channels</h1>
-            <form id="new-channel">
-                <input id="channel" autocomplete="off" autofocus type="text" placeholder="New channel">
-                <input id="channel-submit" type="submit">
+            <form action="/create_channel" method="post">
+                <button>New Channel</button>
             </form>
             <ul id="channels" style="list-style: none;">
             </ul>
         </div>
         <div class="message-container">
             <h1>Messages</h1>
-            <ul id="messages" style="list-style: none;">
-            </ul>
+            <div id="message-list">
+                <ul id="messages" style="list-style: none;">
+                </ul>
+            </div>
+
             <form id="new-message">
                 <input id="message" autocomplete="off" autofocus type="text" placeholder="New message">
                 <input id="message-submit" type="submit">

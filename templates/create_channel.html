@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="static/styles.css" rel="stylesheet" type="text/css" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ch = JSON.parse(localStorage.getItem('channels'));
+
+             // By default, submit button is disabled
+            document.querySelector('#channel-submit').disabled = true;
+
+             // Enable button only if there is text in the input
+            document.querySelector('#channel').onkeyup = () => {
+                if (document.querySelector('#channel').value.length > 0) {
+                    document.querySelector('#channel-submit').disabled = false;
+                }
+                else {
+                    document.querySelector('#channel-submit').disabled = true;
+                }
+            }
+
+            document.querySelector('#new-channel').onsubmit = function() {
+
+                let myChannel = document.querySelector('#channel').value;
+
+                let j;
+                for (j = 0; j < ch.length; j++) {
+                    if (myChannel == ch[j]['channel']) {
+                        alert(`Channel exists, please choose another one.`);
+                        myChannel = '';
+                    }
+                };
+
+                if (myChannel != '') {
+                    ch.push({'channel': myChannel});
+                    localStorage.setItem('channels', JSON.stringify(ch));
+
+                    // Clear input field and disable submit button again
+                    document.querySelector('#message').value = '';
+                    document.querySelector('#message-submit').disabled = true;
+                }
+
+                // Stop form from submitting
+                return false;
+            };
+        })
+    </script>
+	<title>Create New Channel</title>
+</head>
+
+<body>
+    <div>
+        <div class="channel-container">
+            <h1>Channels</h1>
+            <form id="new-channel">
+                <input id="channel" autocomplete="off" autofocus type="text" placeholder="New channel">
+                <input id="channel-submit" type="submit">
+            </form>
+            <ul id="channels" style="list-style: none;">
+            </ul>
+        </div>
+
+        <div>
+            <form id="return-buttom" action="/channels" method="post">
+                <button>Return</button>
+            </form>
+        </div>
+
+    </div>
+</body>
+
+</html>

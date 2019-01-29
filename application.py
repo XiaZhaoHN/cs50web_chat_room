@@ -13,9 +13,19 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/messages", methods=["GET", "POST"])
-def messages():
-    return render_template("messages.html")
+@app.route("/channels", methods=["GET", "POST"])
+def channels():
+    return render_template("layout.html")
+
+
+@app.route("/create_channel", methods=["GET", "POST"])
+def create_channel():
+    return render_template("create_channel.html")
+
+
+@app.route("/channels/<string:my_channel>", methods=["GET", "POST"])
+def display_channel(my_channel):
+    return render_template("messages.html", selectedChannel=my_channel)
 
 
 @io.on("submit message")
