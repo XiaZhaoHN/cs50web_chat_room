@@ -30,8 +30,8 @@ def display_channel(my_channel):
 
 @io.on("submit message")
 def handle_message(message):
+    channel = message['channel']
     user = message['user']
     time = message['time']
     myMessage = message['message']
-    print("py: " + myMessage)
-    emit("announce message", {'user': user, 'time': time, 'message': myMessage}, broadcast=True)
+    emit("announce message", {'channel': channel, 'user': user, 'time': time, 'message': myMessage}, broadcast=True)

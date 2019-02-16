@@ -2,13 +2,13 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     if (!localStorage.getItem('channels')) {
-        var channels = [];
+        let channels = [];
         localStorage.setItem('channels', JSON.stringify(channels));
     }
 
+    // Loop through channels list in localStorage to display
     var ch = JSON.parse(localStorage.getItem('channels'));
 
-    // Loop through channels list in localStorage to display
     var j;
     for (j = 0; j < ch.length; j++) {
         const li = document.createElement('li');
@@ -24,34 +24,56 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('selectedChannel', channel);
     }
 
-    var selectedChannel = localStorage.getItem('selectedChannel');
+    if (!localStorage.getItem('messages')) {
+        let messages = [];
+        localStorage.setItem('messages', JSON.stringify(messages));
+    }
+
+    var messagesList = document.getElementById('messages');
+    if (messagesList.hasChildNodes()){
+        messagesList.removeChild(messagesList.childNodes[0]);
+    }
+
+    // Loop through messages for clicked channel in localStorage to display chat history
+    var ml = JSON.parse(localStorage.getItem('messages'));
+    console.log(ml);
+
+    var i = 0;
+    for (i = 0; i < ml.length; i++) {
+        if (ml[i]['channel'] == localStorage.getItem('selectedChannel')) {
+            console.log(ml[i]);
+            const li = document.createElement('li');
+            li.innerHTML = "<b>" + ml[i]['user'] + " </b>" + "<span style='font-weight: 100; font-size: 12px'>"
+                            + ml[i]['time'] + " </span><br />" + ml[i]['message'];
+
+            // Add new message to list
+            document.querySelector('#messages').append(li);
+        }
+    }
+
+
     document.querySelectorAll('.channel').forEach(function(li) {
-        console.log('li here', li)
         li.onclick = function() {
 
-            var messagesNode = document.getElementById('#messages');
-            messagesNode.innerHTML = '';
+            var messagesList = document.getElementById('messages');
+            messagesList.innerHTML = '';
 
-            console.log('clicked li')
-            let channel = li.innerHTML;
-            localStorage.setItem('channel', channel);
-            console.log(channel);
-            if (!localStorage.getItem(selectedChannel)) {
-                var newChannel = []
-                localStorage.setItem(selectedChannel, JSON.stringify(newChannel));
-            }
+            let selectedChannel = li.innerHTML;
+            localStorage.setItem('selectedChannel', selectedChannel);
 
-            const ml = JSON.parse(localStorage.getItem(selectedChannel));
+            let ml = JSON.parse(localStorage.getItem('messages'));
 
-            // Loop through messages for clicked channel in localStorage to display chat history
-            var i = 0;
+            let i = 0;
             for (i = 0; i < ml.length; i++) {
-                const li = document.createElement('li');
-                li.innerHTML = "<b>" + ml[i]['user'] + " </b>" + "<span style='font-weight: 100; font-size: 12px'>"
-                                + ml[i]['time'] + " </span><br />" + ml[i]['message'];
+                if (ml[i]['channel'] == localStorage.getItem('selectedChannel')) {
+                    console.log(ml[i]);
+                    const li = document.createElement('li');
+                    li.innerHTML = "<b>" + ml[i]['user'] + " </b>" + "<span style='font-weight: 100; font-size: 12px'>"
+                                    + ml[i]['time'] + " </span><br />" + ml[i]['message'];
 
-                // Add new message to list
-                document.querySelector('#messages').append(li);
+                    // Add new message to list
+                    document.querySelector('#messages').append(li);
+                }
             }
         };
     });
@@ -59,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // By default, submit button is disabled
     document.querySelector('#message-submit').disabled = true;
 
-    // Connect to websocket
+    // Connect to web socket
     var socket = io.connect(location.protocol + "//" + document.domain + ":" + location.port);
 
     socket.on('connect', () => {
@@ -76,19 +98,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        var d = new Date();
-        var hr = d.getHours();
-        var min = d.getMinutes();
-        var sec = d.getSeconds();
-        var now = hr + ':' + min + ':' + sec;
-
-        var user = localStorage.getItem('displayName');
-
         document.querySelector('#new-message').onsubmit = function() {
 
-            var myMessage = document.querySelector('#message').value;
+            let d = new Date();
+            let hr = d.getHours();
+            let min = d.getMinutes();
+            let sec = d.getSeconds();
+            let now = hr + ':' + min + ':' + sec;
 
-            socket.emit('submit message', {'user': user, 'time': now, 'message': myMessage});
+            let user = localStorage.getItem('displayName');
+
+            let myMessage = document.querySelector('#message').value;
+            let selectedChannel = localStorage.getItem('selectedChannel');
+            console.log(myMessage);
+
+            if (selectedChannel == '' || user == '' || now == '' || myMessage == ''){
+                return false;
+            }
+
+            socket.emit('submit message', {'channel': selectedChannel, 'user': user, 'time': now, 'message': myMessage});
 
             // Stop form from submitting
             return false;
@@ -97,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.on('announce message', message => {
 
-        console.log('my message is ' + message['user'] + ' ' + message['time'] + ' ' + message['message']);
+        console.log('my message is ' + message['channel'] + ' ' + message['user'] + ' ' + message['time'] + ' ' + message['message']);
 
         // Create new item for list
         const li = document.createElement('li');
@@ -107,9 +135,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add new message to list
         document.querySelector('#messages').append(li);
 
-        let ml = JSON.parse(localStorage.getItem(selectedChannel));
-        ml.push({'user': message['user'], 'time': message['time'], 'message': message['message']});
-        localStorage.setItem(selectedChannel, JSON.stringify(ml));
+        let ml = JSON.parse(localStorage.getItem("messages"));
+        ml.push({'channel': message['channel'], 'user': message['user'], 'time': message['time'], 'message': message['message']});
+        localStorage.setItem('messages', JSON.stringify(ml));
 
         // Clear input field and disable submit button again
         document.querySelector('#message').value = '';

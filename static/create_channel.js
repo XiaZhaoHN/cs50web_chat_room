@@ -29,8 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Enable button only if there is text in the input
   document.querySelector('#channel').onkeyup = () => {
-    console.log("hello");
-
     if (document.querySelector('#channel').value.length > 0) {
       document.querySelector('#channel-submit').disabled = false;
     } else {
