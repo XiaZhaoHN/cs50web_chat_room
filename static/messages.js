@@ -1,6 +1,32 @@
 
+function removeDisplayMessages() {
+    // Remove messages for previous selected channel
+    var messagesList = document.getElementById('messages');
+    messagesList.innerHTML = '';
+}
+
+function displayMessages() {
+
+    // Loop through messages for clicked channel in localStorage to display chat history
+    var ml = JSON.parse(localStorage.getItem('messages'));
+    console.log(ml);
+
+    var i = 0;
+    for (i = 0; i < ml.length; i++) {
+        if (ml[i]['channel'] == localStorage.getItem('selectedChannel')) {
+            const li = document.createElement('li');
+            li.innerHTML = "<b>" + ml[i]['user'] + " </b>" + "<span style='font-weight: 100; font-size: 12px'>"
+                            + ml[i]['time'] + " </span><br />" + ml[i]['message'];
+
+            // Add new message to list
+            document.querySelector('#messages').append(li);
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 
+    // Ensure local storage has channels list
     if (!localStorage.getItem('channels')) {
         let channels = [];
         localStorage.setItem('channels', JSON.stringify(channels));
@@ -19,39 +45,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('#channels').append(li);
     }
 
+    // Ensure local storage has selected channel
     if (!localStorage.getItem('selectedChannel')) {
         let channel = '';
         localStorage.setItem('selectedChannel', channel);
     }
 
+    // Ensure local storage has messages list
     if (!localStorage.getItem('messages')) {
         let messages = [];
         localStorage.setItem('messages', JSON.stringify(messages));
     }
 
-    var messagesList = document.getElementById('messages');
-    if (messagesList.hasChildNodes()){
-        messagesList.removeChild(messagesList.childNodes[0]);
-    }
+    // Clear up messages for previously selected channel
+    removeDisplayMessages();
 
-    // Loop through messages for clicked channel in localStorage to display chat history
-    var ml = JSON.parse(localStorage.getItem('messages'));
-    console.log(ml);
+    // Display messages for currently selected channel
+    displayMessages();
 
-    var i = 0;
-    for (i = 0; i < ml.length; i++) {
-        if (ml[i]['channel'] == localStorage.getItem('selectedChannel')) {
-            console.log(ml[i]);
-            const li = document.createElement('li');
-            li.innerHTML = "<b>" + ml[i]['user'] + " </b>" + "<span style='font-weight: 100; font-size: 12px'>"
-                            + ml[i]['time'] + " </span><br />" + ml[i]['message'];
-
-            // Add new message to list
-            document.querySelector('#messages').append(li);
-        }
-    }
-
-
+    // Display messages when a channel is clicked
     document.querySelectorAll('.channel').forEach(function(li) {
         li.onclick = function() {
 
@@ -98,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // Emit message to  when submitted
         document.querySelector('#new-message').onsubmit = function() {
 
             let d = new Date();
@@ -112,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let selectedChannel = localStorage.getItem('selectedChannel');
             console.log(myMessage);
 
-            if (selectedChannel == '' || user == '' || now == '' || myMessage == ''){
+            if (!selectedChannel || !user || !now || !myMessage){
                 return false;
             }
 
@@ -125,19 +138,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     socket.on('announce message', message => {
 
-        console.log('my message is ' + message['channel'] + ' ' + message['user'] + ' ' + message['time'] + ' ' + message['message']);
-
-        // Create new item for list
-        const li = document.createElement('li');
-        li.innerHTML = "<b>" + message['user'] + " </b>" + "<span style='font-weight: 100; font-size: 12px'>" +
-                        message['time'] + " </span><br />" + message['message'];
-
-        // Add new message to list
-        document.querySelector('#messages').append(li);
-
         let ml = JSON.parse(localStorage.getItem("messages"));
         ml.push({'channel': message['channel'], 'user': message['user'], 'time': message['time'], 'message': message['message']});
         localStorage.setItem('messages', JSON.stringify(ml));
+
+
+        console.log('The latest message is ' + message['channel'] + ' ' + message['user'] + ' ' + message['time'] + ' ' + message['message']);
+
+        removeDisplayMessages();
+        displayMessages();
 
         // Clear input field and disable submit button again
         document.querySelector('#message').value = '';
