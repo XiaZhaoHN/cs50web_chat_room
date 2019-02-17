@@ -1,3 +1,25 @@
 h1 {
   color: red;
 }
+div.message-window {
+  height: 100%;
+}
+div.sticky {
+  position: sticky;
+  bottom: 10px;
+  width: 100%;
+}
+#left-sidebar {
+  position: absolute;
+  width: auto;
+  height: 100%;
+  left: 5px;
+  border: 2px solid #D3D3D3
+}
+#message-container {
+  position: absolute;
+  left: 202px;
+  right: 100%;
+}
+#message-list {
+}

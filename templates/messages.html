@@ -11,8 +11,8 @@
 </head>
 
 <body>
-<div>
-    <div class="channel-container">
+<div class="container">
+    <div id="left-sidebar" style="overflow-y: scroll;">
         <h1>Channels</h1>
         <form action="/create_channel" method="post">
             <button>New Channel</button>
@@ -20,18 +20,20 @@
         <ul id="channels" style="list-style: none;">
         </ul>
     </div>
-    <div class="message-container">
+    <div id="message-container">
         <h1>Messages</h1>
         <div id="message-list">
             <ul id="messages">
             </ul>
         </div>
 
-        <form id="new-message">
-            <input id="message" autocomplete="off" autofocus type="text" placeholder="New message">
-            <input id="message-submit" type="submit">
-        </form>
-    </div>
+        <div class="sticky">
+            <form id="new-message">
+                <input id="message" autocomplete="off" autofocus type="text" placeholder="New message">
+                <input id="message-submit" type="submit">
+            </form>
+        </div>
+     </div>
 </div>
 </body>
 

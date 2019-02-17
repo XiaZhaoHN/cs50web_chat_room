@@ -9,7 +9,6 @@ function displayMessages() {
 
     // Loop through messages for clicked channel in localStorage to display chat history
     var ml = JSON.parse(localStorage.getItem('messages'));
-    console.log(ml);
 
     var i = 0;
     for (i = 0; i < ml.length; i++) {
@@ -20,6 +19,28 @@ function displayMessages() {
 
             // Add new message to list
             document.querySelector('#messages').append(li);
+        }
+    }
+}
+
+function limitMessageNumber(channel) {
+
+    var ml = JSON.parse(localStorage.getItem('messages'));
+
+    // n represents the number of messages for the selected channel
+    // f is the number of first message for the selected channel
+    // k is the number of the messages
+    var n = 0;
+    var f;
+    for (var k = 0; k < ml.length; k++) {
+        if (ml[k]['channel'] == channel) {
+            n++;
+            if (n == 1) {
+                f = k;
+            }
+        }
+        if (n > 99) {
+            ml.splice(f, 1);
         }
     }
 }
@@ -78,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
             let i = 0;
             for (i = 0; i < ml.length; i++) {
                 if (ml[i]['channel'] == localStorage.getItem('selectedChannel')) {
-                    console.log(ml[i]);
                     const li = document.createElement('li');
                     li.innerHTML = "<b>" + ml[i]['user'] + " </b>" + "<span style='font-weight: 100; font-size: 12px'>"
                                     + ml[i]['time'] + " </span><br />" + ml[i]['message'];
@@ -113,17 +133,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Emit message to  when submitted
         document.querySelector('#new-message').onsubmit = function() {
 
-            let d = new Date();
-            let hr = d.getHours();
-            let min = d.getMinutes();
-            let sec = d.getSeconds();
-            let now = hr + ':' + min + ':' + sec;
+            var d = new Date();
+            var hr = d.getHours();
+            var min = d.getMinutes();
+            var sec = d.getSeconds();
+            var now = hr + ':' + min + ':' + sec;
 
-            let user = localStorage.getItem('displayName');
+            var user = localStorage.getItem('displayName');
 
-            let myMessage = document.querySelector('#message').value;
-            let selectedChannel = localStorage.getItem('selectedChannel');
-            console.log(myMessage);
+            var myMessage = document.querySelector('#message').value;
+            var selectedChannel = localStorage.getItem('selectedChannel');
 
             if (!selectedChannel || !user || !now || !myMessage){
                 return false;
@@ -140,8 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let ml = JSON.parse(localStorage.getItem("messages"));
         ml.push({'channel': message['channel'], 'user': message['user'], 'time': message['time'], 'message': message['message']});
-        localStorage.setItem('messages', JSON.stringify(ml));
 
+        // Delete earliest message if over 100 for this channel
+        limitMessageNumber(message['channel']);
+
+        localStorage.setItem('messages', JSON.stringify(ml));
 
         console.log('The latest message is ' + message['channel'] + ' ' + message['user'] + ' ' + message['time'] + ' ' + message['message']);
 
