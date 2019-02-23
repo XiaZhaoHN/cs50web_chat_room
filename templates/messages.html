@@ -12,29 +12,31 @@
 </head>
 
 <body>
-<div id="left-sidebar">
-    <h3>Channels</h3>
-    <form id="channel-button" action="/create_channel" method="post">
-        <button>New Channel</button>
-    </form>
-    <br/>
-    <ul id="channels">
-    </ul>
-</div>
-<div id="message-container" style="height: 100%;">
-    <h1>Messages</h1>
-    <div id="message-list">
-        <ul id="messages" style="flex: 1 1 auto; overflow: auto; width: 500px;">
+<div class="layout-container">
+    <div id="left-sidebar">
+        <h3>Channels</h3>
+        <form id="channel-button" action="/create_channel" method="post">
+            <button>New Channel</button>
+        </form>
+        <br/>
+        <ul id="channels">
         </ul>
     </div>
+    <div id="message-container">
+        <h1>Messages</h1>
+        <div id="message-list">
+            <ul id="messages" style="overflow: auto;">
+            </ul>
+        </div>
 
-    <div class="sticky">
-        <form id="new-message" >
+        <div class="sticky">
+            <form id="new-message">
                 <input id="message" autocomplete="off" autofocus type="text"
                        placeholder="New message">
                 <input type="submit" id="message-submit"
                        style="background:transparent; border:none; color:transparent;">
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 </body>
