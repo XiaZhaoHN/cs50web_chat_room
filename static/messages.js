@@ -39,6 +39,7 @@ function limitMessageNumber(channel) {
                 f = k;
             }
         }
+        console.log("hello " + n + "hahha " + k);
         if (n > 99) {
             ml.splice(f, 1);
         }

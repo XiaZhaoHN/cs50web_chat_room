@@ -13,13 +13,31 @@ div.sticky {
   position: absolute;
   width: auto;
   height: 100%;
-  left: 5px;
-  border: 2px solid #D3D3D3
+  background-color: #C0C0C0;
+  border: 2px solid #D3D3D3;
 }
 #message-container {
   position: absolute;
   left: 202px;
   right: 100%;
 }
-#message-list {
+#new-message {
+  margin: 0;
+  padding: 0;
+}
+#message {
+  margin: 0;
+  padding: 0;
+  border: 2px solid #A9A9A9;
+}
+#channels {
+  margin: 0;
+  padding: 5px;
+  list-style-type: none;
+}
+#channels li:hover{
+  background-color: red;
+}
+#channel-button {
+  text-align:center;
 }
