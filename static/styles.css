@@ -1,12 +1,16 @@
+h3 {
+    padding: 10px;
+    color: green;
+}
 h1 {
-  color: red;
+  padding: 10px;
+  color: green;
 }
 body {
   height: 100%
 }
 div.layout-container {
     position: fixed;
-    border: 2px solid pink;
     height: 100%;
     width: 100%;
     overflow-y: scroll;
@@ -15,43 +19,50 @@ div.message-window {
   height: 100%;
 }
 #left-sidebar {
-  // position: absolute;
   position: fixed;
   float: left;
-  width: 25%;
+  width: 200px;
   height: 100%;
-  background-color: #C0C0C0;
-  border: 2px solid #D3D3D3;
+  background-color: #f0fef0;
+  border: 2px solid #d3d3d3;
 }
 #message-container {
     width: 70%;
     height: 100%;
-    padding-left: 25%;
+    margin-left: 200px;
     float: left;
     position: fixed;
-  // position: absolute;
-  overflow-y: scroll;
-  // left: 202px;
-  // right: 100%;
+    overflow-y: scroll;
+    background-color: #f6f6f6;
 }
 #new-message {
-  margin: 0;
-  padding: 0;
+  margin: 15px;
+  margin-top: 5px;
 }
 #message {
-  margin: 0;
-  padding: 0;
-  border: 2px solid #A9A9A9;
-  list-style-type: none;
+  padding: 5px;
+  width: 95%;
 }
 #channels {
-  margin: 0;
-  padding: 5px;
+  padding: 10px;
   list-style-type: none;
+  font-weight: bold;
+  color: green;
 }
 #channels li:hover{
-  background-color: red;
+  background-color: white;
 }
 #channel-button {
-  text-align:center;
+  margin: 10px;
+}
+#message-submit {
+  background: transparent;
+  border: none;
+  color: transparent;
+  width: 0;
+}
+.emoji-container {
+   margin: 20px;
+   margin-bottom: 0;
+   background-color: none;
 }

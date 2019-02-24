@@ -39,11 +39,19 @@ function limitMessageNumber(channel) {
                 f = k;
             }
         }
-        console.log("hello " + n + "hahha " + k);
         if (n > 99) {
             ml.splice(f, 1);
         }
     }
+
+    localStorage.setItem('messages', JSON.stringify(ml));
+}
+
+function addEmojiToMessage(emojiCode) {
+    var messageBox = document.getElementById('message');
+    var messageContent = messageBox.value;
+    var newMessageContent = messageContent + '' + emojiCode;
+    messageBox.value = newMessageContent;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -111,6 +119,14 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     });
 
+    // Emoji listener
+    document.querySelectorAll('.emoji-button').forEach(function(span) {
+        span.onclick = function(emojiSpan) {
+            var emojiCode = emojiSpan.target.innerText;
+            addEmojiToMessage(emojiCode);
+        };
+    })
+
     // By default, submit button is disabled
     document.querySelector('#message-submit').disabled = true;
 
@@ -151,6 +167,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             socket.emit('submit message', {'channel': selectedChannel, 'user': user, 'time': now, 'message': myMessage});
 
+            $('html, body').animate({scrollTop: $("#myDiv").offset().top}, 2000);
+
             // Stop form from submitting
             return false;
         };
@@ -160,13 +178,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let ml = JSON.parse(localStorage.getItem("messages"));
         ml.push({'channel': message['channel'], 'user': message['user'], 'time': message['time'], 'message': message['message']});
+        localStorage.setItem('messages', JSON.stringify(ml));
 
         // Delete earliest message if over 100 for this channel
         limitMessageNumber(message['channel']);
-
-        localStorage.setItem('messages', JSON.stringify(ml));
-
-        console.log('The latest message is ' + message['channel'] + ' ' + message['user'] + ' ' + message['time'] + ' ' + message['message']);
 
         removeDisplayMessages();
         displayMessages();

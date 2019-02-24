@@ -15,12 +15,11 @@
 <div class="layout-container">
     <div id="left-sidebar">
         <h3>Channels</h3>
+        <ul id="channels">
+        </ul>
         <form id="channel-button" action="/create_channel" method="post">
             <button>New Channel</button>
         </form>
-        <br/>
-        <ul id="channels">
-        </ul>
     </div>
     <div id="message-container">
         <h1>Messages</h1>
@@ -30,11 +29,16 @@
         </div>
 
         <div class="sticky">
+            <div class="emoji-container">
+                <span class="emoji-button">&#x1F601</span>
+                <span class="emoji-button">&#x1F60E</span>
+                <span class="emoji-button">&#x1F354</span>
+                <span class="emoji-button">&#128125</span>
+                <span class="emoji-button">&#x1F479</span>
+            </div>
             <form id="new-message">
-                <input id="message" autocomplete="off" autofocus type="text"
-                       placeholder="New message">
-                <input type="submit" id="message-submit"
-                       style="background:transparent; border:none; color:transparent;">
+                <input id="message" autocomplete="off" autofocus type="text" placeholder="New message">
+                <input type="submit" id="message-submit">
             </form>
         </div>
     </div>
