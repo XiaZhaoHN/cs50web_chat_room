@@ -23,11 +23,6 @@ def channels():
     return render_template("messages.html")
 
 
-@app.route("/channels/<string:my_channel>", methods=["GET", "POST"])
-def display_channel(my_channel):
-    return render_template("messages.html", selectedChannel=my_channel)
-
-
 @io.on("submit message")
 def handle_message(message):
     channel = message['channel']

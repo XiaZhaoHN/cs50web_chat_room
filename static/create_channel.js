@@ -1,3 +1,5 @@
+// js file for create_channel.html
+
 // Unique ID generator: https://codepen.io/gabrieleromanato/pen/Jgoab
 function IDGenerator() {
   this.length = 8;

@@ -1,4 +1,4 @@
-
+// js file for message.html
 function removeDisplayMessages() {
     // Remove messages for previous selected channel
     var messagesList = document.getElementById('messages');
